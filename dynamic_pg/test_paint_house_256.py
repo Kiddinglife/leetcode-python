@@ -45,12 +45,13 @@ class paint_house_256:
         faster because removal of copy of mins
         '''
         if not costs:
-            return 0;
+            return 0
         for index in range(1, len(costs)):
-            costs[index][0] += min( costs[index-1][1], costs[index-1][2]) 
-            costs[index][1] += min( costs[index-1][0], costs[index-1][2]) 
-            costs[index][2] += min( costs[index-1][0], costs[index-1][1]) 
+            costs[index][0] += min(costs[index-1][1], costs[index-1][2])
+            costs[index][1] += min(costs[index-1][0], costs[index-1][2])
+            costs[index][2] += min(costs[index-1][0], costs[index-1][1])
         return min(costs[-1])
+
 
 class test_paint_house_256(unittest.TestCase):
     def setUp(self):
@@ -63,7 +64,7 @@ class test_paint_house_256(unittest.TestCase):
         '''
         #costs = [[17, 2, 17], [16, 16, 5], [14, 3, 19]]
         costs = [[17, 2, 17], [16, 16, 5]]
-        ret = self.inst.min_cost(costs)
+        ret = self.inst.min_cost_v1(costs)
         assert(ret == 7)
 
     def test_1(self):
@@ -72,7 +73,7 @@ class test_paint_house_256(unittest.TestCase):
         Ouput: 2 + 5 + 3 = 10
         '''
         costs = [[17, 2, 17], [16, 16, 5], [14, 3, 19]]
-        ret = self.inst.min_cost(costs)
+        ret = self.inst.min_cost_v1(costs)
         assert(ret == 10)
 
     def test_2(self):
@@ -81,7 +82,7 @@ class test_paint_house_256(unittest.TestCase):
         Ouput: 0
         '''
         costs = []
-        ret = self.inst.min_cost(costs)
+        ret = self.inst.min_cost_v1(costs)
         assert(ret == 0)
 
     def test_3(self):
@@ -90,7 +91,7 @@ class test_paint_house_256(unittest.TestCase):
         Ouput: 0
         '''
         costs = [[7, 6, 2]]
-        ret = self.inst.min_cost(costs)
+        ret = self.inst.min_cost_v1(costs)
         assert(ret == 2)
 
     def test_4(self):
@@ -99,5 +100,5 @@ class test_paint_house_256(unittest.TestCase):
         Ouput: 26
         '''
         costs = [[3, 5, 3], [6, 17, 6], [7, 13, 18], [9, 10, 18]]
-        ret = self.inst.min_cost(costs)
+        ret = self.inst.min_cost_v1(costs)
         assert(ret == 26)
