@@ -10,7 +10,6 @@ sys.setrecursionlimit(10**5)
     https://leetcode.com/problems/longest-increasing-subsequence/description/
 '''
 
-
 def lengthOfLIS_v0(nums):
     """
     O(n^2)
@@ -35,6 +34,15 @@ def lengthOfLIS_v0(nums):
         # print(maxx)
         # print('\n')
     return maxx
+
+
+def lengthOfLIS_v0_1(nums):
+    """
+    same to v_0 but use binary search so complexity is O(nlogn)
+    """
+    # TODO
+    pass
+
 
 
 def lengthOfLIS_v1(nums):
