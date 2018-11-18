@@ -6,6 +6,7 @@ import copy
 import sys
 sys.setrecursionlimit(10**5)
 
+from collections import  deque
 '''
     https://leetcode.com/problems/longest-increasing-subsequence/description/
 '''
@@ -40,7 +41,20 @@ def lengthOfLIS_v0_1(nums):
     """
     same to v_0 but use binary search so complexity is O(nlogn)
     """
-    # TODO
+    n = len(nums)
+    dp = [1] * n
+    maxx = 1
+    for i in range(1, n):
+        maxv = 0
+        for x in range(i):
+            if nums[x] < nums[i] and dp[x] > maxv:
+                maxv = dp[x]
+                # print(maxv)
+        dp[i] += maxv
+        maxx = max(maxx, dp[i])
+        # print(nums[i], dp[i])
+        # print(maxx)
+        # print('\n')
     pass
 
 
