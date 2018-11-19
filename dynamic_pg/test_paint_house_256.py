@@ -11,7 +11,7 @@ class paint_house_256:
     nosetests test_paint_house_256:test_paint_house_256.test_0 -s
     https://leetcode.com/problems/paint-house/description/
     think of steps:
-    currmins[col] = costs[row][col] + min(premins[idxl], premins[idxr]) 
+    currmins[col] = costs[row][col] + min(premins[idxl], premins[idxr])
     mincost = min(currmins)
     '''
 
@@ -48,6 +48,21 @@ class paint_house_256:
         '''
         if not costs:
             return 0
+        mins = sys.maxsize
+        for index in range(1, len(costs)):
+            costs[index][0] += min(costs[index-1][1], costs[index-1][2])
+            costs[index][1] += min(costs[index-1][0], costs[index-1][2])
+            costs[index][2] += min(costs[index-1][0], costs[index-1][1])
+        return min(costs[-1])
+
+    def min_cost_v3(self, costs):
+        '''
+        created by  valeriy2
+        https://leetcode.com/problems/paint-house/discuss/162876/Simple-Python-beats-100
+        faster because removal of copy of mins
+        '''
+        if not costs:
+            return 0
         for index in range(1, len(costs)):
             costs[index][0] += min(costs[index-1][1], costs[index-1][2])
             costs[index][1] += min(costs[index-1][0], costs[index-1][2])
@@ -64,7 +79,7 @@ class test_paint_house_256(unittest.TestCase):
         Given: [[17,2,17],[16,16,5]]
         Ouput: 2 + 5  = 7.
         '''
-        #costs = [[17, 2, 17], [16, 16, 5], [14, 3, 19]]
+        # costs = [[17, 2, 17], [16, 16, 5], [14, 3, 19]]
         costs = [[17, 2, 17], [16, 16, 5]]
         ret = self.inst.min_cost_v1(costs)
         assert(ret == 7)
@@ -104,3 +119,62 @@ class test_paint_house_256(unittest.TestCase):
         costs = [[3, 5, 3], [6, 17, 6], [7, 13, 18], [9, 10, 18]]
         ret = self.inst.min_cost_v1(costs)
         assert(ret == 26)
+
+
+class paint_house_256_hard:
+    '''
+    cd dynamic_pg
+    nosetests test_paint_house_256:test_paint_house_256.test_0 -s
+    https://leetcode.com/problems/paint-house/description/
+    think of steps:
+
+    '''
+
+    def min_cost(self, costs):
+        '''
+        my solution paasing beats 05.37%
+        '''
+
+        if not costs:
+            return 0
+
+        min1, min2, minidx, cols = sys.maxsize, sys.maxsize, -1, costs[0]
+        for k in range(len(cols)):
+            if cols[k] < min1:
+                min2 = min1
+                min1 = cols[k]
+                minidx = k
+            elif cols[k] < min2:
+                min2 = cols[k]
+        premin1, premin2, preminidx = min1, min2, minidx
+        #print(premin1, premin2, preminidx)
+
+        for i in range(1, len(costs)):
+            min1, min2, minidx, cols = sys.maxsize, sys.maxsize, -1, costs[i]
+            for k in range(len(cols)):
+                if k != preminidx:
+                    cols[k] += premin1
+                else:
+                    cols[k] += premin2
+                if cols[k] < min1:
+                    min2 = min1
+                    min1 = cols[k]
+                    minidx = k
+                elif cols[k] < min2:
+                    min2 = cols[k]
+            premin1, premin2, preminidx = min1, min2, minidx
+            #print(premin1, premin2, preminidx)
+        return premin1
+
+class test_paint_house_256_hard(unittest.TestCase):
+    def setUp(self):
+        self.inst = paint_house_256_hard()
+
+    def test_0(self):
+        '''
+        Given: [[17,2,17],[16,16,5]]
+        Ouput: 2 + 5  = 7.
+        '''
+        costs = [[17, 2, 17], [16, 16, 5], [14, 3, 19]]
+        ret = self.inst.min_cost(costs)
+        assert(ret == 10)
