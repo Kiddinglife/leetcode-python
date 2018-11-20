@@ -49,23 +49,22 @@ def lengthOfLIS_v0_1(nums):
     """
     if not nums:
         return 0
-
+    arr = []
     n = len(nums)
-    vs = [nums[0]]
-    lens = [1]
-    maxx = 1
+    dp = [nums[0]]
     for i in range(1, n):
         v = nums[i]
-        idx = bisect.bisect_left(vs, v)
-        if idx >  0 :
-            l = lens[idx-1] + 1
-            maxx = max(maxx, l)
+        if v > dp[-1]:
+            dp.append(v)
         else:
-            l = 1
-        vs.insert(idx, v)
-        lens.insert(idx, l)
-    return maxx
+            if len(dp) > len(arr): 
+                arr = copy.deepcopy(dp)
+            idx = bisect.bisect_left(dp, v)
+            dp[idx] = v
 
+    if len(arr) < len(dp) : 
+        arr = dp
+    return len(arr), arr
 
 
 def lengthOfLIS_v1(nums):
@@ -290,23 +289,27 @@ if __name__ == '__main__':
     # assert(v ==  vv)
 
     # nums = [3, 1, 2]
-    # v = lengthOfLIS_v2(nums)  # 3 should be 1due to incre
+    # v = lengthOfLIS_v2(nums)
     # print(v)
     # assert(v == 2)
     # assert(vs == [1, 2])
 
-    nums = [1,5,6, 1,1,3,4,5]
-    v = lengthOfLIS_v0_1(nums)  # 3 should be 1due to incre
+    nums = [1, 5, 6, 1, 1, 3, 4, 5]
+    v, arr = lengthOfLIS_v0_1(nums)
     assert(v == 4)
+    assert(arr == [1, 3, 4, 5])
 
-    nums = [2,2]
-    v = lengthOfLIS_v0_1(nums)  # 3 should be 1due to incre
+    nums = [2, 2]
+    v, arr = lengthOfLIS_v0_1(nums)
     assert(v == 1)
+    assert(arr == [2])
 
-    nums = [3,1,2]
-    v = lengthOfLIS_v0_1(nums)  # 3 should be 1due to incre
+    nums = [3, 1, 2]
+    v, arr = lengthOfLIS_v0_1(nums)
     assert(v == 2)
+    assert(arr == [1, 2])
 
-    nums = [10,9,2,5,3,7,101,18]
-    v = lengthOfLIS_v0_1(nums)  # 3 should be 1due to incre
+    nums = [10, 9, 2, 5, 3, 7, 101, 18]
+    v, arr = lengthOfLIS_v0_1(nums)
     assert(v == 4)
+    assert(arr == [2, 3, 7, 101])
