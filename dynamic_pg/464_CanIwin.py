@@ -11,8 +11,6 @@ https://leetcode.com/problems/can-i-win/
 
 
 def canIWin(maxChoosableInteger, desiredTotal):
-    """
-    """
     if desiredTotal <= maxChoosableInteger:
         return True
 
@@ -22,12 +20,11 @@ def canIWin(maxChoosableInteger, desiredTotal):
     for n in range(1, maxChoosableInteger+1):
         s += n
         arr.append(n)
-    print(arr, desiredTotal)
 
     if s < desiredTotal:
         return False
 
-    elif s == desiredTotal:
+    if s == desiredTotal:
         if maxChoosableInteger % 2:
             return True
         else:
@@ -36,44 +33,49 @@ def canIWin(maxChoosableInteger, desiredTotal):
     dp = {}
 
     def f(arr, dt):
+        # if arr[-1] >= dt
+        # must use arr[-1] largest one eg arr [2,4] dt 3
+        # arr[-1] >= dt gives false but it should be true
+        if arr[-1] >= dt:
+            return True
 
-        k = (tuple(arr), dt)
+        k = tuple(arr)
         cache = dp.get(k)
         if cache:
-            print('cached', k, cache)
             return cache
 
-        n = len(arr)
-        if n == 1:
-            #print('chaching last', k, True)
-            dp[k] = (arr[0] >= dt)
-            return dp[k]
-
-        # pos = bisect.bisect_left(arr, dt)
-        # if pos < len(arr):
-        #     # find element >= dt
-        #     return True
-
         # no element >= dt and so recursion
-        for i in range(n):
-            arrcpy = arr[:i] + arr[i+1:]
-            print('pick', arr[i], arrcpy, dt - arr[i])
-            win = f(arrcpy, dt - arr[i])
-            print(not win)
-            if not win:
-                #print('chaching', k, True)
+        for i in range(len(arr)):
+            # print('pick', arr[i], arrcpy, dt - arr[i])
+            if not f(arr[:i] + arr[i+1:], dt - arr[i]):
                 dp[k] = True
-                print(k, True)
                 return True
-        print(k, False)
         dp[k] = False
         return False
 
-    f(arr, desiredTotal)
-    k = (tuple(arr), desiredTotal)
-    print('final', arr, desiredTotal, dp, dp[k])
-    return dp[k]
+    return f(arr, desiredTotal)
 
+
+# def canIWin(maxChoosableInteger, desiredTotal):
+#     def helper(nums, desiredTotal):
+#         hash = str(nums)
+#         if hash in memo:
+#             return memo[hash]
+
+#         if nums[-1] >= desiredTotal:
+#             return True
+
+#         for i in range(len(nums)):
+#             if not helper(nums[:i] + nums[i+1:], desiredTotal - nums[i]):
+#                 memo[hash]= True
+#                 return True
+#         memo[hash] = False
+#         return False
+
+#     if (1 + maxChoosableInteger) * maxChoosableInteger/2 < desiredTotal:
+#         return False
+#     memo = {}
+#     return helper([n for n in range(1, maxChoosableInteger+1)], desiredTotal)
 
 if __name__ == '__main__':
     maxChoosableInteger = 3
@@ -89,7 +91,7 @@ if __name__ == '__main__':
     maxChoosableInteger = 18
     desiredTotal = 79
     ret = canIWin(maxChoosableInteger, desiredTotal)
-    assert(ret == False)
+    assert(ret == True)
 
     maxChoosableInteger = 4
     desiredTotal = 6
