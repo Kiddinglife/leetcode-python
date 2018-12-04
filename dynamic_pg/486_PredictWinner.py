@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import collections
 import bisect
 import sys
 import copy
 sys.setrecursionlimit(10**5)
-import collections
 
 '''
 https://leetcode.com/problems/predict-the-winner/
@@ -53,20 +53,27 @@ def PredictTheWinner(nums):
     ret = canwin(0, n - 1, 0)
     return ret
 
-# @TODO
+
 def PredictTheWinnerCached(nums):
     n = len(nums)
     if n < 3:
         return True
-    sums = [0, 0, ]
+    sums = [0, 0]
+    dp = {}
 
     def canwin(start, end, sumidx):
+        print(start, end, sumidx)
         if end == start:
             sums[sumidx] += nums[start]
             f = sums[0] >= sums[1]
             # print('end', f, sumidx, sums[sumidx] - nums[start],'+', nums[start], '=', sums[sumidx], sums)
             sums[sumidx] -= nums[start]
             return f
+
+        cache = dp.get((start, end, sumidx))
+        if cache:
+            print('use chaches')
+            return cache
 
         diff1 = max(nums[end], nums[start+1]) - nums[start]
         diff2 = max(nums[end-1],  nums[start]) - nums[end]
@@ -92,9 +99,12 @@ def PredictTheWinnerCached(nums):
                 ret = canwin(start + 1, end,  idx)
                 # print('left ', ret , sumidx,  sums[sumidx] - nums[start], '+', nums[start], '=',  sums[sumidx])
                 sums[sumidx] -= nums[start]
+        dp[(start, end, sumidx)] = ret
         return ret
     ret = canwin(0, n - 1, 0)
+    print(dp)
     return ret
+
 
 if __name__ == '__main__':
     nums = [1, 5, 2]

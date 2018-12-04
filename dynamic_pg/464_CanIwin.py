@@ -10,45 +10,88 @@ https://leetcode.com/problems/can-i-win/
 '''
 
 
-def canIWin(self, maxChoosableInteger, desiredTotal):
+def canIWin(maxChoosableInteger, desiredTotal):
     """
-    1 2 3 4 5   8
-    must choose from (1,2) because choose from (3,4,5) must lose
-    f(arr, dt) = 
-    return first lose and second win if arr[0]+arr[-1] >= dt
-    return !if arr[0]+arr[-1] > dt
     """
     if desiredTotal <= maxChoosableInteger:
         return True
 
-    arr = [n for n in range(1, maxChoosableInteger+1)]
-    print(sum(arr))
-    if sum(arr) < desiredTotal:
+    arr = []
+    s = 0
+
+    for n in range(1, maxChoosableInteger+1):
+        s += n
+        arr.append(n)
+    print(arr, desiredTotal)
+
+    if s < desiredTotal:
         return False
-    elif sum(arr) == desiredTotal:
+
+    elif s == desiredTotal:
         if maxChoosableInteger % 2:
             return True
         else:
             return False
 
-    def f(arr, dt):
-        for i in range(maxChoosableInteger):
-            if arr[i] + arr[-1] >= dt:
-                if i == 0:
-                    return True
-                for j in range(1, i):
-                    arrr = arr[:(n-i)]
-                    dtt = dt - arr[j]
-                    return !f(arrr, dtt)
-            else:
-                for x in range(n):
-                    dtt = dt - arr[x]
-                    arrr = arr[:]
-                    arrr.pop(x)
-                    return !f(arrr, dtt)
+    dp = {}
 
-    return f(arr, desiredTotal)
+    def f(arr, dt):
+
+        k = (tuple(arr), dt)
+        cache = dp.get(k)
+        if cache:
+            print('cached', k, cache)
+            return cache
+
+        n = len(arr)
+        if n == 1:
+            #print('chaching last', k, True)
+            dp[k] = (arr[0] >= dt)
+            return dp[k]
+
+        # pos = bisect.bisect_left(arr, dt)
+        # if pos < len(arr):
+        #     # find element >= dt
+        #     return True
+
+        # no element >= dt and so recursion
+        for i in range(n):
+            arrcpy = arr[:i] + arr[i+1:]
+            print('pick', arr[i], arrcpy, dt - arr[i])
+            win = f(arrcpy, dt - arr[i])
+            print(not win)
+            if not win:
+                #print('chaching', k, True)
+                dp[k] = True
+                print(k, True)
+                return True
+        print(k, False)
+        dp[k] = False
+        return False
+
+    f(arr, desiredTotal)
+    k = (tuple(arr), desiredTotal)
+    print('final', arr, desiredTotal, dp, dp[k])
+    return dp[k]
 
 
 if __name__ == '__main__':
-    pass
+    maxChoosableInteger = 3
+    desiredTotal = 5
+    ret = canIWin(maxChoosableInteger, desiredTotal)
+    assert(ret == True)
+
+    maxChoosableInteger = 10
+    desiredTotal = 11
+    ret = canIWin(maxChoosableInteger, desiredTotal)
+    assert(ret == False)
+
+    maxChoosableInteger = 18
+    desiredTotal = 79
+    ret = canIWin(maxChoosableInteger, desiredTotal)
+    assert(ret == False)
+
+    maxChoosableInteger = 4
+    desiredTotal = 6
+    ret = canIWin(maxChoosableInteger, desiredTotal)
+    assert(ret == True)
