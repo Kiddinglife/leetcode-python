@@ -75,11 +75,10 @@ def PredictTheWinnerCached(nums):
 
         if (not sunidx0_win and sumidx == 0) or (sunidx0_win and sumidx == 1):
             sums[sumidx] += nums[end]
-            ret = canwin(start, end - 1,  idx)
-            dp[(start, end, sumidx)] = ret
+            sunidx0_win = canwin(start, end - 1,  idx)
             sums[sumidx] -= nums[end]
 
-        return ret
+        return sunidx0_win
 
     ret = canwin(0, n - 1, 0)
     return ret
