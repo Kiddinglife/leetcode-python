@@ -62,47 +62,26 @@ def PredictTheWinnerCached(nums):
     dp = {}
 
     def canwin(start, end, sumidx):
-        print(start, end, sumidx)
         if end == start:
             sums[sumidx] += nums[start]
             f = sums[0] >= sums[1]
-            # print('end', f, sumidx, sums[sumidx] - nums[start],'+', nums[start], '=', sums[sumidx], sums)
             sums[sumidx] -= nums[start]
             return f
 
-        cache = dp.get((start, end, sumidx))
-        if cache:
-            print('use chaches')
-            return cache
-
-        diff1 = max(nums[end], nums[start+1]) - nums[start]
-        diff2 = max(nums[end-1],  nums[start]) - nums[end]
         idx = (sumidx + 1) % 2
+        sums[sumidx] += nums[start]
+        sunidx0_win = canwin(start + 1, end,  idx)
+        sums[sumidx] -= nums[start]
 
-        if diff1 <= 0 or diff1 <= diff2:
-            sums[sumidx] += nums[start]
-            ret = canwin(start + 1, end,  idx)
-            # print('left ', ret , sumidx,  sums[sumidx] - nums[start] , '+', nums[start], '=',  sums[sumidx])
-            sums[sumidx] -= nums[start]
-            if (not ret and sumidx == 0) or (ret and sumidx == 1):
-                sums[sumidx] += nums[end]
-                ret = canwin(start, end - 1,  idx)
-                # print('right', ret, sumidx,  sums[sumidx] - nums[end] , '+', nums[end], '=',  sums[sumidx])
-                sums[sumidx] -= nums[end]
-        elif diff2 <= 0 or diff1 >= diff2:
+        if (not sunidx0_win and sumidx == 0) or (sunidx0_win and sumidx == 1):
             sums[sumidx] += nums[end]
             ret = canwin(start, end - 1,  idx)
-            # print('right', ret,  sumidx, sums[sumidx] - nums[end], '+', nums[end], '=', sums[sumidx])
+            dp[(start, end, sumidx)] = ret
             sums[sumidx] -= nums[end]
-            if (not ret and sumidx == 0) or (ret and sumidx == 1):
-                sums[sumidx] += nums[start]
-                ret = canwin(start + 1, end,  idx)
-                # print('left ', ret , sumidx,  sums[sumidx] - nums[start], '+', nums[start], '=',  sums[sumidx])
-                sums[sumidx] -= nums[start]
-        dp[(start, end, sumidx)] = ret
+
         return ret
+
     ret = canwin(0, n - 1, 0)
-    print(dp)
     return ret
 
 
